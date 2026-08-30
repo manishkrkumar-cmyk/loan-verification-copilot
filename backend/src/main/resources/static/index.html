@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Intain Loan Verification Copilot</title>
+  <!-- Google Fonts, Bootstrap 5 & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- Top Enterprise Navbar -->
+  <nav class="navbar navbar-expand-lg px-4 py-3 app-nav border-bottom">
+    <div class="d-flex align-items-center gap-3">
+      <div class="brand-icon-wrapper">
+        <i class="bi bi-shield-lock-fill fs-5"></i>
+      </div>
+      <div>
+        <div class="navbar-brand m-0 fw-bold fs-5 tracking-tight text-dark d-flex align-items-center gap-2">
+          Intain <span class="badge bg-indigo-subtle text-primary border border-primary-subtle px-2 py-1 rounded-pill fw-semibold font-mono fs-8">COPILOT v1.0</span>
+        </div>
+        <p class="text-secondary small m-0 fs-8">Automated Loan Tape Verification & Cryptographic Ledger</p>
+      </div>
+    </div>
+    
+    <div class="ms-auto d-flex align-items-center gap-3">
+      <div class="persona-badge-wrapper d-flex align-items-center gap-2 px-3 py-1-5 rounded-pill shadow-sm">
+        <span class="pulse-dot"></span>
+        <span class="text-muted fs-8 fw-semibold text-uppercase">Active Role:</span>
+        <select id="roleSelector" class="form-select form-select-sm border-0 bg-transparent text-dark fw-bold shadow-none p-0 cursor-pointer">
+          <option value="OPERATOR">Data Operator</option>
+          <option value="REVIEWER">Exception Reviewer</option>
+          <option value="CONSUMER">Data Consumer (Audit)</option>
+        </select>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid py-4 px-4 app-main">
+
+    <!-- KPI Metrics Strip with Distinct Multi-Colors -->
+    <div class="row g-3 mb-4">
+      <div class="col-xl-3 col-sm-6">
+        <div class="metric-card card-blue p-3 h-100 shadow-sm">
+          <div class="d-flex justify-content-between align-items-start">
+            <span class="text-muted fw-bold fs-8 text-uppercase">Ingested Loans</span>
+            <div class="metric-icon-box bg-blue-subtle"><i class="bi bi-folder2-open"></i></div>
+          </div>
+          <h2 id="statTotal" class="text-dark fw-bold my-2">0</h2>
+          <div class="fs-8 text-primary fw-medium"><i class="bi bi-arrow-up-short"></i> Tape records parsed</div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-sm-6">
+        <div class="metric-card card-rose p-3 h-100 shadow-sm">
+          <div class="d-flex justify-content-between align-items-start">
+            <span class="text-muted fw-bold fs-8 text-uppercase">Active Exceptions</span>
+            <div class="metric-icon-box bg-rose-subtle"><i class="bi bi-exclamation-triangle"></i></div>
+          </div>
+          <h2 id="statExceptions" class="text-danger fw-bold my-2">0</h2>
+          <div class="fs-8 text-danger fw-medium"><i class="bi bi-clock-history"></i> Pending human sign-off</div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-sm-6">
+        <div class="metric-card card-emerald p-3 h-100 shadow-sm">
+          <div class="d-flex justify-content-between align-items-start">
+            <span class="text-muted fw-bold fs-8 text-uppercase">Verified In Ledger</span>
+            <div class="metric-icon-box bg-emerald-subtle"><i class="bi bi-patch-check"></i></div>
+          </div>
+          <h2 id="statVerified" class="text-success fw-bold my-2">0</h2>
+          <div class="fs-8 text-success fw-medium"><i class="bi bi-shield-check"></i> Cryptographically signed</div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-sm-6">
+        <div class="metric-card card-purple p-3 h-100 shadow-sm">
+          <div class="d-flex justify-content-between align-items-start">
+            <span class="text-muted fw-bold fs-8 text-uppercase">Quality Index</span>
+            <div class="metric-icon-box bg-purple-subtle"><i class="bi bi-speedometer2"></i></div>
+          </div>
+          <h2 id="statScore" class="text-dark fw-bold my-2" style="color: #7c3aed !important;">100%</h2>
+          <div class="fs-8 text-secondary fw-medium"><i class="bi bi-graph-up-arrow text-primary"></i> Normalized clean ratio</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. DATA OPERATOR VIEW -->
+    <div id="view-operator" class="role-view active">
+      <div class="card bg-white border rounded-3 mb-4 shadow-sm">
+        <div class="card-header bg-white border-bottom py-3 px-4 d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-cloud-arrow-up-fill text-primary"></i>
+            <h6 class="m-0 fw-bold text-dark">Tape File Ingestion</h6>
+          </div>
+          <span class="fs-8 text-muted font-mono">Format: RFC 4180 CSV</span>
+        </div>
+        <div class="card-body p-4">
+          <div class="upload-dropzone p-4 text-center mb-3">
+            <div class="d-inline-flex p-3 rounded-circle bg-blue-subtle mb-2">
+              <i class="bi bi-file-earmark-spreadsheet fs-3"></i>
+            </div>
+            <h6 class="text-dark fw-bold mb-1">Select or drop loan portfolio tape</h6>
+            <p class="text-secondary small mb-3">Execute automated 9-point rule validation engine and anomaly classification</p>
+            <div class="d-flex justify-content-center align-items-center gap-2 max-w-lg mx-auto">
+              <input type="file" id="csvFileInput" class="form-control custom-file-input shadow-none" accept=".csv" />
+              <button class="btn btn-indigo-grad fw-bold px-4 text-nowrap" onclick="uploadLoanTape()">
+                <i class="bi bi-lightning-charge-fill me-1"></i> Ingest & Verify
+              </button>
+            </div>
+          </div>
+          <div id="uploadSummary"></div>
+        </div>
+      </div>
+
+      <!-- Lineage Table -->
+      <div class="card bg-white border rounded-3 shadow-sm">
+        <div class="card-header bg-white border-bottom py-3 px-4 d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-diagram-3-fill text-primary"></i>
+            <h6 class="m-0 fw-bold text-dark">Batch Lineage History</h6>
+          </div>
+          <button class="btn btn-outline-secondary btn-sm fs-8" onclick="fetchSummary()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-custom align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Batch Run</th>
+                <th>File Manifest</th>
+                <th>Operator</th>
+                <th>Total Parsed</th>
+                <th>Clean Rows</th>
+                <th>Exceptions</th>
+                <th>Ingested At</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody">
+              <tr><td colspan="7" class="text-center text-muted py-4">No batch files ingested in current session.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. REVIEWER VIEW -->
+    <div id="view-reviewer" class="role-view">
+      <div class="card bg-white border rounded-3 shadow-sm mb-4">
+        <div class="card-header bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-shield-exclamation text-danger"></i>
+            <h6 class="m-0 fw-bold text-dark">Exception Remediation Queue</h6>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <select id="severityFilter" class="form-select form-select-sm filter-select bg-light border" onchange="loadExceptions()">
+              <option value="">All Severities</option>
+              <option value="CRITICAL">Critical Severity</option>
+              <option value="HIGH">High Severity</option>
+              <option value="MEDIUM">Medium Severity</option>
+              <option value="LOW">Low Severity</option>
+            </select>
+            <button class="btn btn-outline-secondary btn-sm" onclick="loadExceptions()"><i class="bi bi-arrow-clockwise"></i></button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-custom align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Flag ID</th>
+                <th>Loan Reference</th>
+                <th>Violation Code</th>
+                <th>Target Field</th>
+                <th>Severity</th>
+                <th>Rule Diagnostics</th>
+                <th class="text-end">Action</th>
+              </tr>
+            </thead>
+            <tbody id="exceptionsTableBody">
+              <tr><td colspan="7" class="text-center text-muted py-4">No unresolved exceptions detected.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. DATA CONSUMER VIEW -->
+    <div id="view-consumer" class="role-view">
+      <div class="card bg-white border rounded-3 shadow-sm mb-4">
+        <div class="card-header bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-database-check text-success"></i>
+            <h6 class="m-0 fw-bold text-dark">Cryptographic Loan Verification Ledger</h6>
+          </div>
+          <button class="btn btn-outline-secondary btn-sm" onclick="loadVerifiedLoans()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-custom align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Verification ID</th>
+                <th>Loan ID</th>
+                <th>Signer</th>
+                <th>Timestamp</th>
+                <th>SHA-256 Digest</th>
+                <th class="text-end">Ledger Lineage</th>
+              </tr>
+            </thead>
+            <tbody id="verifiedTableBody">
+              <tr><td colspan="6" class="text-center text-muted py-4">Zero records committed to immutable ledger.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- AI Copilot Remediator Modal -->
+  <div class="modal fade" id="copilotModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border modal-custom bg-white">
+        <div class="modal-header border-bottom py-3 px-4 bg-light">
+          <div class="d-flex align-items-center gap-2">
+            <div class="brand-icon-wrapper" style="width: 32px; height: 32px; border-radius: 8px;">
+              <i class="bi bi-stars fs-6"></i>
+            </div>
+            <h6 class="modal-title fw-bold text-dark">AI Remediation Copilot</h6>
+          </div>
+          <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div id="aiLoading" class="text-center py-5 d-none">
+            <div class="spinner-border text-primary mb-3" role="status"></div>
+            <p class="text-secondary small font-mono mb-0">Evaluating rule matrix & synthesizing audit resolution...</p>
+          </div>
+          <div id="aiContent">
+            <div class="ai-insight-box p-3 rounded-3 mb-4">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="bi bi-robot text-primary"></i>
+                <span class="text-primary fw-bold fs-8 text-uppercase">Diagnostic Analysis</span>
+              </div>
+              <p id="aiExplanationText" class="text-dark fs-8 lh-base m-0 font-mono"></p>
+            </div>
+            
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fs-8 text-muted fw-bold text-uppercase">Flagged Anomaly Field</label>
+                <input type="text" id="flaggedFieldInput" class="form-control form-control-sm bg-light font-mono" readonly />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fs-8 text-muted fw-bold text-uppercase">Auditor Attestation Note</label>
+                <input type="text" id="resolutionNoteInput" class="form-control form-control-sm font-mono" placeholder="Attestation note..." />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-top py-2 px-4 d-flex justify-content-between bg-light">
+          <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Dismiss</button>
+          <button type="button" class="btn btn-emerald-grad btn-sm fw-bold px-4" onclick="confirmResolution()">
+            <i class="bi bi-check2-circle me-1"></i> Attest & Append to Ledger
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audit Trail Modal -->
+  <div class="modal fade" id="auditModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border modal-custom bg-white">
+        <div class="modal-header border-bottom py-3 px-4 bg-light">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-journal-code text-primary"></i>
+            <h6 class="modal-title fw-bold text-dark">Immutable Event Trail</h6>
+          </div>
+          <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-0">
+          <div class="table-responsive">
+            <table class="table table-custom align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Event Type</th>
+                  <th>Actor</th>
+                  <th>Ledger Transaction Details</th>
+                  <th>Timestamp</th>
+                </tr>
+              </thead>
+              <tbody id="auditTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
