@@ -1,4 +1,5 @@
-const API_BASE = 'http://localhost:8085/api';
+// Relative API endpoint works seamlessly both locally and when deployed
+const API_BASE = '/api';
 
 let selectedExceptionId = null;
 let selectedLoanId = null;
@@ -126,7 +127,7 @@ async function uploadLoanTape() {
     fileInput.value = '';
     showToast("Batch Committed", `Successfully verified ${data.filename}`, "success");
   } catch (e) {
-    showToast("Upload Error", "Verify Spring Boot is active on port 8085.", "danger");
+    showToast("Upload Error", "Failed to upload file. Check network and server logs.", "danger");
   } finally {
     if (btn) {
       btn.disabled = false;
